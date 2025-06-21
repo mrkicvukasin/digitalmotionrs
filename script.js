@@ -113,8 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const PULSE_SPEED = 1.5;
 
         function resize() {
-            width = canvas.offsetWidth;
-            height = canvas.offsetHeight;
+            // Use window dimensions for width, and hero section height for height
+            width = window.innerWidth;
+            const heroSection = document.getElementById('hero');
+            height = heroSection ? heroSection.offsetHeight : window.innerHeight;
             canvas.width = width;
             canvas.height = height;
         }
@@ -181,9 +183,14 @@ document.addEventListener('DOMContentLoaded', () => {
             draw();
         }
 
+        // Debounce resize to avoid rapid redraws on mobile
+        let resizeTimeout;
         window.addEventListener('resize', () => {
-            resize();
-            createNodes();
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(() => {
+                resize();
+                createNodes();
+            }, 150);
         });
 
         initNetwork();
